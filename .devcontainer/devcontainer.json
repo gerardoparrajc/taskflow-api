@@ -1,0 +1,43 @@
+{
+  "name": "Taskflow - Java 21",
+  "dockerComposeFile": "compose.yaml",
+  "service": "dev",
+  "workspaceFolder": "/workspaces/taskflow-api",
+  "remoteUser": "vscode",
+  "shutdownAction": "stopCompose",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "21",
+      "installMaven": true,
+      "mavenVersion": "3.9.11"
+    },
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "mounts": [
+    "source=taskflow-${devcontainerId}-copilot,target=/home/vscode/.copilot,type=volume",
+    "source=taskflow-${devcontainerId}-vscode,target=/home/vscode/.vscode-server,type=volume",
+    "source=taskflow-${devcontainerId}-github,target=/home/vscode/.config/gh,type=volume",
+    "source=taskflow-${devcontainerId}-maven,target=/home/vscode/.m2,type=volume"
+  ],
+  "remoteEnv": {
+    "PATH": "/home/vscode/.local/bin:${containerEnv:PATH}",
+    "SPRING_DATASOURCE_URL": "jdbc:postgresql://db:5432/taskflow",
+    "SPRING_DATASOURCE_USERNAME": "taskflow",
+    "SPRING_DATASOURCE_PASSWORD": "${containerEnv:POSTGRES_PASSWORD}"
+  },
+  "forwardPorts": [8080],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack",
+        "vmware.vscode-boot-dev-pack",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}
