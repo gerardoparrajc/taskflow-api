@@ -3,6 +3,23 @@
 Entorno de desarrollo con Java 21, Maven 3.9.11, Node.js LTS, PostgreSQL 18,
 GitHub CLI y GitHub Copilot CLI.
 
+## Proyecto y plan
+
+TaskFlow API es una API de aprendizaje para gestionar proyectos y tareas
+privados por usuario. El MVP incluirá cuentas, autenticación, gestión de
+proyectos y tareas, y una demo pública sujeta a la viabilidad de servicios
+gratuitos. La aplicación todavía no está implementada.
+
+- [Especificación y decisiones pendientes](PROJECT_SPEC.md).
+- [Registro de decisiones](docs/DECISIONS.md).
+- [Plan de implementación](docs/PLAN.md).
+- [Instrucciones para agentes](AGENTS.md).
+- [Issues y estado del trabajo](https://github.com/gerardoparrajc/taskflow-api/issues).
+
+La especificación describe los requisitos acordados; las issues indican el
+estado de implementación. Las instrucciones siguientes corresponden al entorno
+existente, no implican que la API ya esté disponible.
+
 ## Abrir el DevContainer
 
 1. Instala Docker con Docker Compose y la extension **Dev Containers** de VS Code.
