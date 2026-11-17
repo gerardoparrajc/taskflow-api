@@ -77,17 +77,22 @@ sensibles.
 - **Decisión:** probar Brevo para correo real sin dominio propio y evaluar un
   buzón de pruebas local. Las pruebas automatizadas no dependerán de envíos
   reales.
-- **Consecuencias:** la activación del correo transaccional, los límites y la
-  entrega sin dominio propio siguen sin verificarse. Si no es viable, se
-  decidirá otra opción antes de integrarla. Brevo puede sustituir el remitente
-  como solución temporal y advierte de limitaciones de entrega.
+- **Resultado de la validación (2026-11-17, [#2](https://github.com/gerardoparrajc/taskflow-api/issues/2)):** con una cuenta Free y sin habilitar facturación, se verificó un remitente y la API transaccional respondió `HTTP 201`. El mensaje llegó a la bandeja de entrada de prueba. En el mensaje recibido, Brevo sustituyó el dominio del remitente por `@brevosend.com`. Es un resultado observado con esta cuenta y destinatario; no garantiza la entrega a otros proveedores o destinatarios.
+- **Buzón local:** se añadió Mailpit al DevContainer. Se comprobó que un mensaje enviado desde el contenedor a `mailpit:1025` aparece en su interfaz web. Esta comprobación manual no depende de Brevo ni envía el mensaje a internet. La aplicación todavía no está conectada a Mailpit.
+- **Consecuencias:** Mailpit queda como buzón local para desarrollo. La integración con la aplicación y la decisión de usar Brevo en la demo siguen pendientes. Las pruebas automatizadas no deben enviar correo real.
+- **Límites y restricciones:** la documentación consultada de Brevo indica hasta 300 emails diarios en el plan gratuito; el límite puede cambiar y debe revisarse en la cuenta. Sin dominio autenticado, Brevo puede modificar el remitente visible.
+- **Credenciales:** no guardar API keys en el repositorio, issues, capturas ni logs. Introducirlas solo en el entorno local y borrarlas de la sesión después de la prueba.
 - **Alternativas consideradas:** emuladores de AWS para pruebas locales, SES
   real y Resend. Resend requiere dominio verificado para enviar a otros
   destinatarios; AWS Free Tier y SES tienen límites y condiciones temporales.
   No se decidió integrar estos servicios.
 - **Issue:** [#2](https://github.com/gerardoparrajc/taskflow-api/issues/2).
 - **Referencias:** [Brevo: requisitos de remitente](https://help.brevo.com/hc/en-us/articles/14925263522578-Comply-with-Gmail-Yahoo-and-Microsoft-s-requirements-for-email-senders),
-  [Resend: dominio de pruebas](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain).
+  [Resend: dominio de pruebas](https://resend.com/docs/knowledge-base/403-error-resend-dev-domain),
+  [Brevo: límites del plan Free](https://help.brevo.com/hc/en-us/articles/208580669-FAQs-What-are-the-limits-of-the-Free-plan),
+  [Brevo: remitentes](https://help.brevo.com/hc/en-us/articles/208836149-Create-a-new-sender-From-name-and-From-email),
+  [Brevo: envío transaccional por API](https://developers.brevo.com/reference/send-transac-email),
+  [Mailpit: instalación con Docker](https://mailpit.axllent.org/docs/install/docker/).
 
 ## 2026-11-16: ejecución y alojamiento
 

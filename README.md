@@ -89,6 +89,82 @@ ruta de volumen de la imagen oficial a partir de PostgreSQL 18. Cambiar la
 contraseña en `.env` no cambia la de una base ya inicializada: debes modificarla
 en PostgreSQL y recrear el contenedor para actualizar su entorno.
 
+## Pruebas de correo: Mailpit y Brevo
+
+### Mailpit local
+
+Mailpit recibe mensajes de prueba y los muestra en el navegador; no los entrega a destinatarios de internet. Después de abrir el DevContainer, visita [http://localhost:8025](http://localhost:8025).
+
+Desde un terminal dentro del DevContainer, se puede comprobar la recepción SMTP con:
+
+```bash
+curl --url smtp://mailpit:1025 \
+  --mail-from test@taskflow.invalid \
+  --mail-rcpt test@taskflow.invalid \
+  --upload-file - <<'EOF'
+From: TaskFlow <test@taskflow.invalid>
+To: Prueba local <test@taskflow.invalid>
+Subject: Prueba de Mailpit
+
+Este mensaje debe aparecer solamente en Mailpit.
+EOF
+```
+
+El nombre `mailpit` resuelve dentro de la red de Docker Compose. El puerto `1025` no se publica al host; el puerto `8025` se usa para la interfaz web. Esta prueba confirma que Mailpit recibe mensajes, pero no que la aplicación TaskFlow esté integrada con él.
+
+### Prueba manual con Brevo
+
+Brevo se probó con una cuenta Free, sin habilitar facturación. En la prueba realizada, la API respondió `HTTP 201` y el mensaje llegó a la bandeja de entrada. El remitente visible apareció con el dominio `@brevosend.com`. Esto valida esa prueba concreta, no garantiza la entrega a otros destinatarios.
+
+La documentación de Brevo indica un límite de hasta 300 envíos diarios para el plan gratuito; revisa el límite vigente en tu cuenta. Sin un dominio autenticado, Brevo puede sustituir el dominio del remitente.
+
+Para repetir la prueba, usa un remitente validado y un buzón propio que puedas consultar. En un terminal local del DevContainer, introduce los valores cuando se soliciten:
+
+```bash
+read -rsp "API key de Brevo: " BREVO_API_KEY
+printf '\n'
+read -rp "Dirección remitente validada: " BREVO_SENDER_EMAIL
+read -rp "Tu buzón de prueba: " BREVO_TEST_RECIPIENT
+export BREVO_API_KEY BREVO_SENDER_EMAIL BREVO_TEST_RECIPIENT
+```
+
+Envía un único correo:
+
+```bash
+node --input-type=module <<'NODE'
+for (const name of ["BREVO_API_KEY", "BREVO_SENDER_EMAIL", "BREVO_TEST_RECIPIENT"]) {
+  if (!process.env[name]) throw new Error(`Falta la variable ${name}`);
+}
+
+const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+  method: "POST",
+  headers: {
+    accept: "application/json",
+    "api-key": process.env.BREVO_API_KEY,
+    "content-type": "application/json",
+  },
+  body: JSON.stringify({
+    sender: { name: "Prueba TaskFlow", email: process.env.BREVO_SENDER_EMAIL },
+    to: [{ email: process.env.BREVO_TEST_RECIPIENT }],
+    subject: "Prueba de correo de TaskFlow",
+    textContent: "Correo de prueba enviado desde Brevo.",
+  }),
+});
+
+console.log(`HTTP ${response.status}`);
+console.log(await response.text());
+if (!response.ok) process.exitCode = 1;
+NODE
+```
+
+Después de la prueba, elimina las variables de esa sesión:
+
+```bash
+unset BREVO_API_KEY BREVO_SENDER_EMAIL BREVO_TEST_RECIPIENT
+```
+
+No publiques la API key ni la escribas en archivos versionados, issues, capturas o logs. No la pongas en el `.env` compartido del repositorio: Compose carga ese archivo en varios contenedores. Una respuesta `HTTP 201` confirma que Brevo aceptó la solicitud; comprueba también la bandeja de entrada y la carpeta de spam para validar la entrega observada.
+
 ## Conservar y recuperar conversaciones de Copilot
 
 ### Persistencia local

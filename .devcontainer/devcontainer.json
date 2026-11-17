@@ -28,7 +28,7 @@
     "SPRING_DATASOURCE_USERNAME": "taskflow",
     "SPRING_DATASOURCE_PASSWORD": "${containerEnv:POSTGRES_PASSWORD}"
   },
-  "forwardPorts": [8080],
+  "forwardPorts": [8080, 8025],
   "customizations": {
     "vscode": {
       "extensions": [
