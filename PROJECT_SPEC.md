@@ -40,10 +40,7 @@ habilitar facturación. No es un despliegue de producción.
 - Cada usuario solo puede acceder a sus propios recursos. Las contraseñas se
   almacenan con un algoritmo de hash adecuado; las claves y credenciales se
   configuran fuera del repositorio.
-- El correo real se investigará con Brevo, sin dominio propio y sin facturación.
-  Su activación y entrega deben comprobarse en [#2](https://github.com/gerardoparrajc/taskflow-api/issues/2);
-  no se consideran garantizadas. Se evaluará un buzón de pruebas local y las
-  pruebas automatizadas no dependerán de envíos reales.
+- El correo real se probó en [#2](https://github.com/gerardoparrajc/taskflow-api/issues/2): en una cuenta gratuita de Brevo, sin habilitar facturación, una solicitud de correo transaccional fue aceptada (`HTTP 201`) y el mensaje llegó al buzón de prueba. Brevo mostró el remitente bajo `@brevosend.com`. Este resultado no garantiza la entrega a otros destinatarios. Mailpit está disponible en el entorno local para recibir mensajes sin enviarlos a internet; la aplicación aún no está conectada al buzón. Las credenciales se configuran fuera del repositorio y las pruebas automatizadas no dependen de envíos reales.
 
 ## Dominio
 
@@ -139,8 +136,7 @@ Las reglas técnicas detalladas están en [AGENTS.md](AGENTS.md). En particular:
 
 Antes de implementar el área correspondiente, concretar y documentar:
 
-- Resultado de la prueba de Brevo y alternativa si no es viable sin dominio o
-  facturación; herramienta concreta para el buzón local.
+- Decidir si integrar Brevo para el correo de la demo, teniendo en cuenta la sustitución observada del dominio del remitente y que una entrega exitosa no garantiza entregas generales. Mailpit ya se validó como buzón local; conectar la aplicación y sus pruebas a ese buzón queda pendiente.
 - Viabilidad de Render y Neon con las cuentas y límites disponibles, y forma de
   desplegar la demo sin habilitar facturación, incluida su automatización.
 - Rutas, formatos de petición y respuesta y códigos HTTP de las operaciones
