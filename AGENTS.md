@@ -63,3 +63,8 @@
 - No guardar secretos ni datos sensibles; no habilitar facturación ni crear
   recursos de pago. Comprobar la viabilidad de proveedores gratuitos antes de
   utilizarlos.
+- El objetivo de este proyecto es el aprendizaje, así que hay que explicar paso a paso
+  lo que hay que hacer, así como, de forma didáctica, explicar todos los conceptos
+  que se van utilizando, por qué se utilizan, para qué sirven, etc. La intención
+  es que se entienda perfectamente, tanto el flujo de desarrollo, como todos los
+  pasos que se van siguiendo a nivel de código.
