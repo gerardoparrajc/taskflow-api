@@ -1,0 +1,36 @@
+name: CI
+
+on:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+
+permissions:
+    contents: read
+
+jobs:
+    build:
+        name: Compile and test
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: taskflow-api
+
+        steps:
+            - name: Check out repository
+              uses: actions/checkout@v4
+
+            - name: Set up Java
+              uses: actions/setup-java@v4
+              with:
+                  distribution: temurin
+                  java-version: '21'
+                  cache: maven
+                  cache-dependency-path: taskflow-api/pom.xml
+
+            - name: Compile
+              run: ./mvnw --batch-mode clean test-compile
+
+            - name: Run tests
+              run: ./mvnw --batch-mode test
