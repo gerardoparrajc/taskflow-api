@@ -56,6 +56,14 @@ cd taskflow-api
 `clean test-compile` limpia y compila el código principal y el código de pruebas.
 `test` ejecuta la suite y devuelve un error si alguna prueba falla.
 
+Las pruebas de integración requieren acceso a un motor Docker. El DevContainer
+utiliza Docker-in-Docker: su motor es independiente del motor del host y requiere
+ejecutar el DevContainer con privilegios. Comprueba el acceso con `docker info`.
+
+Testcontainers crea un PostgreSQL temporal para las pruebas; no utiliza la base
+de datos persistente de desarrollo. La primera ejecución puede descargar imágenes
+Docker. Si Docker no está disponible, la prueba falla en lugar de omitirse.
+
 Para iniciar la aplicación:
 
 ```bash
@@ -79,10 +87,13 @@ Code reciben estas variables de entorno:
 - `SPRING_DATASOURCE_USERNAME=taskflow`
 - `SPRING_DATASOURCE_PASSWORD`, tomado de `.env`
 
-La conexión de la aplicación a PostgreSQL y las migraciones todavía no están
-configuradas; se abordarán en el issue #3. PostgreSQL no publica el puerto 5432
-al host. Las variables se configuran mediante `remoteEnv`, por lo que un proceso
-iniciado directamente con `docker exec` no las recibe automáticamente.
+La aplicación utiliza estas variables para conectar con PostgreSQL. Al arrancar,
+Liquibase aplica las migraciones pendientes desde el changelog versionado.
+Hibernate valida el esquema frente a las entidades, pero no lo crea ni modifica.
+
+PostgreSQL no publica el puerto 5432 al host. Las variables se configuran
+mediante `remoteEnv`, por lo que un proceso iniciado directamente con
+`docker exec` no las recibe automáticamente.
 
 PostgreSQL guarda sus datos en un volumen, montado en `/var/lib/postgresql`, la
 ruta de volumen de la imagen oficial a partir de PostgreSQL 18. Cambiar la
