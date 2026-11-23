@@ -9,7 +9,7 @@
         <tagDatabase tag="taskflow-baseline" />
     </changeSet>
 
-    <changeset id="002-create-users" author="taskflow">
+    <changeSet id="002-create-users" author="taskflow">
         <createTable tableName="users">
             <column name="id" type="BIGINT" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false" />
@@ -35,5 +35,5 @@
                 <constraints nullable="false" />
             </column>
         </createTable>
-    </changeset>
+    </changeSet>
 </databaseChangeLog>
