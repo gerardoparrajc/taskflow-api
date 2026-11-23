@@ -38,12 +38,29 @@ sensibles.
 - **Consecuencias:** se vuelve a iniciar sesión al caducar el token; un cambio o
   recuperación de contraseña invalida los JWT anteriores. Los códigos de
   verificación y recuperación son de un solo uso y con caducidad configurable.
-  Los plazos concretos y el mecanismo de invalidación siguen pendientes.
+  Los plazos concretos siguen pendientes; el mecanismo de invalidación se
+  concreta en la decisión del 2026-11-23.
 - **Issues:** [#4](https://github.com/gerardoparrajc/taskflow-api/issues/4),
   [#5](https://github.com/gerardoparrajc/taskflow-api/issues/5),
   [#6](https://github.com/gerardoparrajc/taskflow-api/issues/6),
   [#8](https://github.com/gerardoparrajc/taskflow-api/issues/8),
   [#11](https://github.com/gerardoparrajc/taskflow-api/issues/11).
+
+## 2026-11-23: invalidación de JWT por versión de credenciales
+
+- **Contexto:** cambiar o recuperar la contraseña debe invalidar los JWT
+  emitidos anteriormente.
+- **Decisión:** cada usuario tiene una versión de credenciales. El JWT incluirá
+  la versión vigente al emitirse y su validación la comparará con la versión
+  actual del usuario.
+- **Consecuencias:** cambiar o recuperar la contraseña actualizará el hash e
+  incrementará la versión en la misma transacción. Los tokens con versiones
+  distintas serán rechazados. La comprobación efectiva se implementará en
+  [#6](https://github.com/gerardoparrajc/taskflow-api/issues/6) y las
+  operaciones de contraseña en [#8](https://github.com/gerardoparrajc/taskflow-api/issues/8).
+- **Concurrencia:** las actualizaciones de contraseña deberán evitar la pérdida
+  de incrementos concurrentes.
+- **Issue relacionada:** [#4](https://github.com/gerardoparrajc/taskflow-api/issues/4).
 
 ## 2026-11-16: ciclo de vida de tareas
 

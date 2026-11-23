@@ -33,6 +33,10 @@ habilitar facturación. No es un despliegue de producción.
   iniciar sesión.
 - Recuperación de contraseña por correo y cambio de contraseña con sesión
   iniciada. Ambos invalidan los JWT emitidos anteriormente.
+- Los JWT incluirán la versión de credenciales del usuario. Al validarlos se
+  comparará con la versión actual; cambiar o recuperar la contraseña incrementará
+  esa versión e invalidará los tokens anteriores. La comprobación y las
+  operaciones de contraseña se implementarán en las issues #6 y #8.
 - Los códigos de verificación y recuperación son de un solo uso y caducan; sus
   plazos son configurables.
 - El usuario puede consultar sus datos de cuenta y eliminarla junto con sus
@@ -143,7 +147,7 @@ Antes de implementar el área correspondiente, concretar y documentar:
   añadidas; formato y límites de paginación.
 - Orden predeterminado de tareas, dirección y tratamiento de fechas ausentes;
   comportamiento y errores ante rangos o parámetros inválidos.
-- Plazos predeterminados de los códigos de verificación y recuperación,
-  política de contraseñas y mecanismo de invalidación de JWT.
+- Plazos predeterminados de los códigos de verificación y recuperación y
+  política de contraseñas.
 
 No convertir estas cuestiones en requisitos cerrados sin una decisión explícita.
