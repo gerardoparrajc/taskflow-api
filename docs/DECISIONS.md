@@ -139,3 +139,28 @@ sensibles.
   implementarlas y sus decisiones se incorporan a este registro y a la
   especificación. La documentación no sustituye la comprobación de las issues.
 - **Referencia:** [plan de issues](https://github.com/gerardoparrajc/taskflow-api/issues).
+
+## 2026-11-24: registro y verificación de correo
+
+- **Contexto:** [#5](https://github.com/gerardoparrajc/taskflow-api/issues/5)
+  necesitaba cerrar rutas, formato y plazos del código, política de
+  contraseñas y forma de enviar el correo.
+- **Decisión:**
+  - Rutas bajo `/api/v1/auth`: `POST /register`, `POST /verify-email` y
+    `POST /resend-verification`.
+  - El código de verificación es un token opaco aleatorio de un solo uso; en
+    base de datos solo se guarda su hash. Caduca a los 15 minutos por defecto
+    (configurable).
+  - Contraseña de 8 a 72 caracteres, sin más reglas (72 es el límite de BCrypt).
+  - Para no revelar qué correos están registrados, `register` y
+    `resend-verification` responden siempre `202 Accepted` con el mismo cuerpo,
+    exista o no la cuenta.
+  - Los reenvíos requieren al menos 60 segundos desde el último código
+    (configurable); si no ha pasado ese tiempo, no se envía nada y la respuesta
+    sigue siendo la misma.
+  - El correo se envía por SMTP genérico (`spring-boot-starter-mail`): Mailpit
+    en local y, más adelante, cualquier relé SMTP (incluido el de Brevo) mediante
+    variables de entorno.
+- **Consecuencias:** la decisión de usar Brevo en la demo sigue pendiente
+  ([#14](https://github.com/gerardoparrajc/taskflow-api/issues/14)); la
+  aplicación no depende de él. Las pruebas automatizadas no envían correo real.

@@ -38,7 +38,14 @@ habilitar facturación. No es un despliegue de producción.
   esa versión e invalidará los tokens anteriores. La comprobación y las
   operaciones de contraseña se implementarán en las issues #6 y #8.
 - Los códigos de verificación y recuperación son de un solo uso y caducan; sus
-  plazos son configurables.
+  plazos son configurables. El de verificación es un token opaco aleatorio, con
+  15 minutos de caducidad por defecto; solo se guarda su hash.
+- Rutas de verificación (#5), bajo `/api/v1/auth`: `POST /register`,
+  `POST /verify-email` y `POST /resend-verification`. Las contraseñas tienen
+  entre 8 y 72 caracteres. Registro y reenvío responden siempre `202 Accepted`
+  con el mismo cuerpo para no revelar qué correos existen; el reenvío exige 60
+  segundos desde el último código (configurable). El correo se envía por SMTP
+  genérico (Mailpit en local).
 - El usuario puede consultar sus datos de cuenta y eliminarla junto con sus
   proyectos, tareas y datos asociados.
 - Cada usuario solo puede acceder a sus propios recursos. Las contraseñas se
@@ -140,14 +147,14 @@ Las reglas técnicas detalladas están en [AGENTS.md](AGENTS.md). En particular:
 
 Antes de implementar el área correspondiente, concretar y documentar:
 
-- Decidir si integrar Brevo para el correo de la demo, teniendo en cuenta la sustitución observada del dominio del remitente y que una entrega exitosa no garantiza entregas generales. Mailpit ya se validó como buzón local; conectar la aplicación y sus pruebas a ese buzón queda pendiente.
+- Decidir si usar Brevo (por ejemplo, mediante su relé SMTP) para el correo de la demo, teniendo en cuenta la sustitución observada del dominio del remitente y que una entrega exitosa no garantiza entregas generales. Mailpit ya se validó como buzón local; conectar la aplicación y sus pruebas a ese buzón queda pendiente.
 - Viabilidad de Render y Neon con las cuentas y límites disponibles, y forma de
   desplegar la demo sin habilitar facturación, incluida su automatización.
 - Rutas, formatos de petición y respuesta y códigos HTTP de las operaciones
-  añadidas; formato y límites de paginación.
+  añadidas, salvo el registro y la verificación de correo (ya decididos);
+  formato y límites de paginación.
 - Orden predeterminado de tareas, dirección y tratamiento de fechas ausentes;
   comportamiento y errores ante rangos o parámetros inválidos.
-- Plazos predeterminados de los códigos de verificación y recuperación y
-  política de contraseñas.
+- Plazo predeterminado del código de recuperación.
 
 No convertir estas cuestiones en requisitos cerrados sin una decisión explícita.
